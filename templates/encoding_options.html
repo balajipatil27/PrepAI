@@ -1,0 +1,92 @@
+
+
+<!-- templates/encoding_options.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PrepAI</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+    <style>
+       .navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #1e1e1e;
+  color: white;
+}
+
+.navbar .logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+  margin: 0;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: white;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: #99bc85;
+}
+    </style>
+</head>
+  <nav class="navbar">
+    <div class="logo">PrepAI</div>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/pre">Preprocess</a></li>
+      <li><a href="/eda">EDA</a></li>
+      <li><a href="/aboutus">About Us</a></li>
+    </ul>
+  </nav>
+<body class="bg-white">
+    <div class="container py-5">
+        <h2 class="text-center mb-4" style="font-weight: bold;">⚙️ Choose Encoding & Type Conversion</h2>
+
+        <form action="/preprocess" method="POST" class="border p-4 bg-light rounded shadow">
+            {% for col, dtype in column_types.items() %}
+            <div class="mb-4">
+                <label class="form-label fw-bold">{{ col }} <small class="text-muted">[Detected: {{ dtype }}]</small></label>
+
+                {% if dtype == 'object' %}
+                <div class="mb-2">
+                    <select name="encoding_strategy_{{ col }}" class="form-select">
+                        <option value="ignore">Ignore</option>
+                        <option value="onehot">One-Hot Encoding</option>
+                        <option value="label">Label Encoding</option>
+                    </select>
+                </div>
+                {% endif %}
+
+                <div>
+                    <select name="convert_dtype_{{ col }}" class="form-select">
+                        <option value="">Keep as {{ dtype }}</option>
+                        <option value="int">Convert to Integer</option>
+                        <option value="float">Convert to Float</option>
+                        <option value="str">Convert to String</option>
+                        <option value="datetime">Convert to DateTime</option>
+                    </select>
+                </div>
+            </div>
+            {% endfor %}
+
+            <div class="d-grid">
+                <button type="submit" class="btn btn-success" style="background-color: black;">🚀 Start Preprocessing</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PrepAI</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+      color: #110a0a;
+    }
+
+    .navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #1e1e1e;
+  color: white;
+}
+
+.navbar .logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+  margin: 0;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: white;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: #99bc85;
+}
+    .main_heading {
+      text-align: center;
+      font-size: 40px;
+      margin-top: 40px;
+      color: #1f1f1f;
+    }
+
+    .main-para {
+      max-width: 700px;
+      margin: 20px auto;
+      font-size: 18px;
+      text-align: center;
+      line-height: 1.6;
+      color: #444;
+    }
+
+    #filechoose {
+      text-align: center;
+      font-size: 20px;
+      margin: 30px 0 10px;
+    }
+
+    #dataset {
+      display: block;
+      margin: 0 auto 30px;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      background-color: #fff;
+    }
+
+    #column-select {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    label {
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    select {
+      padding: 8px 12px;
+      margin: 10px 0;
+      border-radius: 5px;
+      font-size: 16px;
+      border: 1px solid #aaa;
+      background-color: #fff;
+    }
+
+    button {
+      padding: 12px 24px;
+      font-size: 16px;
+      background-color: #1f1f1f;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    button:hover {
+      background-color: #333;
+      transform: scale(1.03);
+    }
+
+    #preview, #results {
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    h3, h4 {
+      color: #1f1f1f;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    img {
+      display: block;
+      margin: 20px auto;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+
+   <nav class="navbar">
+    <div class="logo">PrepAI</div>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/pre">Preprocess</a></li>
+      <li><a href="/eda">EDA</a></li>
+      <li><a href="/aboutus">About Us</a></li>
+    </ul>
+  </nav>
+
+  <h1 class="main_heading">ML Visualizer</h1>
+  <p class="main-para">
+    A comprehensive machine learning visualizer and educational platform.
+    As a learner, I found myself constantly scrolling through different sites
+    for data analysis tools. SmartAnalysis consolidates everything in
+    one place, saving time and making it easier for you to visualize, learn, 
+    and experiment with machine learning algorithms.
+  </p>
+
+  <p id="filechoose">Choose a Random Data set below!!</p>
+
+  <input type="file" id="dataset"><br><br>
+
+  <div id="preview"></div>
+  <div id="results"></div>
+
+  <div id="column-select" style="display: none;">
+    <label>Target Column:</label>
+    <select id="target"></select><br><br>
+
+    <label>Choose Algorithm:</label>
+    <select id="algorithm">
+      <option value="logistic">Logistic Regression</option>
+      <option value="decision_tree">Decision Tree</option>
+      <option value="random_forest">Random Forest</option>
+      <option value="knn">KNN</option>
+      <option value="naive_bayes">Naive Bayes</option>
+      <option value="svm">SVM</option>
+    </select><br><br>
+
+    <button onclick="trainModel()">Train & Visualize</button>
+  </div>
+
+  <script>
+    let uid = '';
+    document.getElementById('dataset').addEventListener('change', function () {
+      const formData = new FormData();
+      formData.append('dataset', this.files[0]);
+
+      fetch('/upload', { method: 'POST', body: formData })
+        .then(res => res.json())
+        .then(data => {
+          uid = data.uid;
+          document.getElementById('preview').innerHTML = data.preview;
+
+          const select = document.getElementById('target');
+          select.innerHTML = '';
+          data.columns.forEach(col => {
+            const opt = document.createElement('option');
+            opt.value = col;
+            opt.innerText = col;
+            select.appendChild(opt);
+          });
+
+          document.getElementById('column-select').style.display = 'block';
+
+          let edaHTML = `<h3>EDA Summary</h3>`;
+          edaHTML += `<p><strong>Shape:</strong> ${data.eda.shape[0]} rows × ${data.eda.shape[1]} columns</p>`;
+          edaHTML += `<h4>Data Types</h4><ul>`;
+          for (const [key, value] of Object.entries(data.eda.dtypes)) {
+            edaHTML += `<li>${key}: ${value}</li>`;
+          }
+          edaHTML += `</ul>`;
+
+          edaHTML += `<h4>Missing Values</h4><ul>`;
+          for (const [key, value] of Object.entries(data.eda.missing)) {
+            edaHTML += `<li>${key}: ${value}</li>`;
+          }
+          edaHTML += `</ul>`;
+
+          edaHTML += `<h4>Statistics</h4>${data.eda.describe}`;
+          edaHTML += `<h4>Last 5 Rows</h4>${data.eda.tail}`;
+
+          if (data.eda.corr_path) {
+            edaHTML += `<h4>Correlation Matrix</h4><img src="${data.eda.corr_path}" width="600">`;
+          }
+
+          document.getElementById('preview').innerHTML += edaHTML;
+        });
+    });
+
+    function trainModel() {
+      const formData = new FormData();
+      formData.append('uid', uid);
+      formData.append('target', document.getElementById('target').value);
+      formData.append('algorithm', document.getElementById('algorithm').value);
+
+      fetch('/train', { method: 'POST', body: formData })
+        .then(res => res.json())
+        .then(data => {
+          if (data.error) {
+            document.getElementById('results').innerHTML = `<p style="color:red;">Error: ${data.error}</p>`;
+          } else {
+            document.getElementById('results').innerHTML = `
+              <h3>Accuracy: ${data.accuracy}%</h3>
+              <img src="${data.confusion_matrix}" width="500">
+            `;
+          }
+        });
+    }
+  </script>
+</body>
+</html>
+

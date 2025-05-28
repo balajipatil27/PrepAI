@@ -1,0 +1,88 @@
+
+<!-- templates/result.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PrepAI</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+      .navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #1e1e1e;
+  color: white;
+}
+
+.navbar .logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+  margin: 0;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: white;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: #99bc85;
+}
+    </style>
+</head>
+  <nav class="navbar">
+    <div class="logo">PrepAI</div>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/pre">Preprocess</a></li>
+      <li><a href="/eda">EDA</a></li>
+      <li><a href="/aboutus">About Us</a></li>
+    </ul>
+  </nav>
+<body class="bg-white">
+    <div class="container py-5">
+        <h2 class="mb-4 text-center" style="font-weight: bold;">✅ Preprocessing Complete</h2>
+
+        <!-- Data Preview -->
+        <div class="mb-4">
+            <h4>📋 Data Preview (First 5 Rows):</h4>
+            <div class="table-responsive">
+                {{ table | safe }}
+            </div>
+        </div>
+
+        <!-- Preprocessing Steps -->
+        <div class="mb-4">
+            <h4>🛠️ Preprocessing Steps:</h4>
+            <ul class="list-group">
+                {% for step in report %}
+                <li class="list-group-item">{{ step }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Correlation Heatmap -->
+        <div class="mb-4">
+            <h4>📈 Correlation Heatmap:</h4>
+            <img src="{{ heatmap_image }}" alt="Heatmap" class="img-fluid border rounded">
+        </div>
+
+        <!-- Download Buttons -->
+        <div class="d-flex gap-3">
+            <a href="/download/{{ cleaned_filename }}" class="btn btn-success">⬇️ Download Cleaned Dataset</a>
+            <a href="/download/{{ log_filename }}" class="btn btn-secondary">📄 Download Preprocessing Report</a>
+            <a href="/pre" class="btn btn-outline-primary">🔁 Upload Another File</a>
+        </div>
+    </div>
+</body>
+</html>

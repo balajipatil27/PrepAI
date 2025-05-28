@@ -1,0 +1,12 @@
+flask
+pandas
+scikit-learn
+matplotlib
+seaborn
+openpyxl
+requests
+beautifulsoup4
+lxml
+numpy
+fpdf
+nltk

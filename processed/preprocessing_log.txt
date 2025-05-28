@@ -1,0 +1,12 @@
+✔️ Loaded dataset with shape (3835, 14).
+✅ No columns dropped (nulls < 50%).
+✅ No duplicate rows found.
+⏭️ Skipped encoding for 'Day Name'.
+⏭️ Skipped encoding for 'Brand'.
+⏭️ Skipped encoding for 'Customer Name'.
+🎯 Applied One-Hot Encoding to 'City'.
+🎯 Applied One-Hot Encoding to 'Payment Method'.
+🎯 Applied One-Hot Encoding to 'Mobile Model'.
+🔁 Converted boolean values True/False to 1/0.
+✅ Final dataset shape: (3835, 49)
+📊 Correlation heatmap generated.
