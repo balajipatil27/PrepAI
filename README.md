@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/bf40c839-3c71-4732-ba38-c7c314144bbb)# PrepAI
+# PrepAI
 
 ![image](https://github.com/user-attachments/assets/7892303a-17d3-44fa-a5e9-da144746e51a)
 
